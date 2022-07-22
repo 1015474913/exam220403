@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="cn.kgc.exam.mapper.CourseMapper">
+<select  id="getListCourse"  resultType="CourseInfo">
+select * from courseinfo where courseId=#{courseId}
+</select>
+<select id="getCourseList"  resultType="CourseInfo">
+select * from courseinfo
+</select>
+<select  id="getCourse"  resultType="CourseInfo">
+select * from courseinfo where courseId=#{courseId}
+</select>
+    <resultMap id="CourseInfoGradeInfo" type="CourseInfo">
+        <result property="courseId" column="courseId" />
+        <result property="courseName" column="courseName" />
+        <result property="division" column="division" />
+        <association property="grade"  javaType="GradeInfo">
+            <result property="gradeId" column="gradeId" />
+            <result property="gradeName" column="gradeName" />
+        </association>
+    </resultMap>
+
+    <select id="getListCourses" resultMap="CourseInfoGradeInfo">
+        select c.courseId,c.courseName,c.division,g.gradeId,g.gradeName from courseinfo c,gradeinfo g where c.gradeId=g.gradeId
+    </select>
+    <select id="getCoursesById" resultMap="CourseInfoGradeInfo">
+        select c.courseId,c.courseName,c.division,g.gradeId,g.gradeName from
+                                                                            courseinfo c,gradeinfo g where c.gradeId=g.gradeId and c.courseId=#{id}
+    </select>
+
+    <update id="updateCourse" parameterType="CourseInfo">
+        update courseinfo set courseName=#{courseName},division=#{division},gradeId=#{grade.gradeId} where courseId=#{courseId}
+    </update>
+    <insert id="addCourse" parameterType="CourseInfo">
+        insert into courseinfo values (null,#{courseName},#{division},#{grade.gradeId})
+    </insert>
+    <delete id="delCourses" >
+        delete from courseinfo where courseId=#{id}
+    </delete>
+</mapper>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="cn.kgc.exam.mapper.TeacherMapper">
+<select  id="findTeacher"  resultType="TeacherInfo">
+select * from teacherinfo where teacherAccount=#{teacherAccount} and teacherPwd=#{teacherPwd}
+</select> 
+<select id="getAllTeacher"   resultType="int">
+select count(*)  from teacherinfo
+</select>
+    <resultMap id="TeacherInfoMap" type="TeacherInfo">
+        <result property="teacherId" column="teacherId"/>
+        <result property="teacherName" column="teacherName"/>
+        <result property="teacherAccount" column="teacherAccount"/>
+        <result property="teacherPwd" column="teacherPwd"/>
+        <result property="adminPower" column="adminPower" />
+        <result property="isWork" column="isWork" />
+        <collection property="classInfo" ofType="ClassInfo" >
+            <result property="classId" column="classId" />
+            <result property="className" column="className" />
+        </collection>
+
+    </resultMap>
+    <select id="getListTeacherInfo" resultMap="TeacherInfoMap">
+        select t.teacherId,t.teacherName,t.teacherAccount,t.teacherPwd,t.adminPower,t.isWork,c.classId,c.className,c.gradeId
+        from teacherinfo t left join classinfo c on t.teacherId=c.teacherId
+    </select>
+    <select id="getTeacherById" resultType="TeacherInfo" >
+        select teacherId,teacherName,teacherAccount,teacherPwd,adminPower,isWork from teacherinfo where teacherId=#{id}
+    </select>
+    <update id="updateTeacher" parameterType="TeacherInfo" >
+        update teacherinfo set teacherName=#{teacherName},teacherAccount=#{teacherAccount},
+                               teacherPwd=#{teacherPwd},adminPower=#{adminPower} where teacherId=#{teacherId}
+    </update>
+    <insert id="addTeacher" parameterType="TeacherInfo">
+        insert into teacherinfo(teacherId,teacherName,teacherAccount,teacherPwd,adminPower)
+        values(default,#{teacherName},#{teacherAccount},#{teacherPwd},#{adminPower})
+    </insert>
+    <delete id="delTeacher" >
+        delete from teacherinfo where teacherId=#{id}
+    </delete>
+</mapper>

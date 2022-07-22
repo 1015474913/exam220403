@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper  namespace="cn.kgc.exam.mapper.ClassMapper">
+    <resultMap type="ClassInfo" id="listGrade">
+        <association property="grade" javaType="GradeInfo" column="gradeId" select="cn.kgc.exam.mapper.GradeMapper.showGrade"></association>
+    </resultMap>
+    <select id="getClassById" resultMap="listGrade">
+		select * from classinfo where classId=#{classId}
+	</select>
+<select id="getListClass"  resultType="ClassInfo">
+select * from classinfo where gradeId=#{gradeId}
+</select>
+<select id="toExamPlan"  resultType="ClassInfo">
+select * from classinfo where classId=#{classId}
+</select>
+<select id="showListClass"  resultType="ClassInfo">
+    select * from classinfo
+</select>
+<select id="getExamPlan"  resultType="ClassInfo">
+select * from classinfo where classId=#{classId}
+</select>
+  <select id="findSelf"  resultType="ClassInfo">
+      select * from classinfo where classId=#{classId}
+  </select>
+    <resultMap id="ClassInfoAndGradeInfoAndTeacherInfo" type="ClassInfo" >
+        <result column="classId" property="classId" />
+        <result column="className" property="className" />
+        <association property="grade"  javaType="GradeInfo">
+            <result column="gradeId" property="gradeId" />
+            <result column="gradeName" property="gradeName" />
+        </association>
+        <association property="teacher" javaType="TeacherInfo" >
+            <result column="teacherId" property="teacherId" />
+            <result column="teacherName" property="teacherName" />
+            <!--            <result column="teacherAccount" property="teacherAccount"/>-->
+            <!--            <result column="teacherPwd" property="teacherPwd" />-->
+            <!--            <result column="adminPower" property="adminPower" />-->
+            <!--            <result column="isWork" property="isWork" />-->
+        </association>
+    </resultMap>
+    <select id="getListClassEdit" resultMap="ClassInfoAndGradeInfoAndTeacherInfo">
+        select c.classId,c.className,g.gradeName,t.teacherName from classinfo c,gradeinfo g,teacherinfo t where c.gradeId=g.gradeId and c.teacherId=t.teacherId
+    </select>
+
+    <select id="getClassEditById" resultMap="ClassInfoAndGradeInfoAndTeacherInfo">
+        select c.classId,c.className,g.gradeName,t.teacherName from classinfo c,gradeinfo g,teacherinfo t where
+            c.gradeId=g.gradeId and c.teacherId=t.teacherId and c.classId=#{id}
+    </select>
+    <update id="updateClassInfo" parameterType="ClassInfo">
+        update classinfo set className=#{className} ,gradeId =#{grade.gradeId}, teacherId=#{teacher.teacherId} where classId=#{classId}
+    </update>
+
+    <insert id="addClass" parameterType="ClassInfo" >
+        insert into classinfo values (null,#{className},#{gradeId},#{teacherId})
+    </insert>
+    <delete id="delClassById" parameterType="ClassInfo">
+        delete from classinfo where classId=#{id}
+    </delete>
+</mapper>
